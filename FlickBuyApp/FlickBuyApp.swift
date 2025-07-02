@@ -10,7 +10,7 @@ import SwiftData
 
 @main
 struct FlickBuyApp: App {
-    var sharedModelContainer: ModelContainer = {
+    let sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
         ])
@@ -23,10 +23,18 @@ struct FlickBuyApp: App {
         }
     }()
 
+    @StateObject private var authViewModel = AuthViewModel()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authViewModel.isLoggedIn {
+                ContentView()
+                    .modelContainer(sharedModelContainer)
+                    .environmentObject(authViewModel)
+            } else {
+                SignInScreen()
+                    .environmentObject(authViewModel)
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
